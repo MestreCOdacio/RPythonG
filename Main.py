@@ -1,22 +1,26 @@
+from typing import *
 import random
 import time
-import Jogador
-import Utilities
+from Jogador import Jogador
+from Utilities import gerar_inimigo_aleatorio, iniciar_combate, limpar_tela
 
-def jogo_principal():
-    Utilities.limpar_tela()
-    print("="*40)
+def jogo_principal() -> None:
+    limpar_tela()
+    DIVISOR: Final[str] = "=" * 40
+
+    print(DIVISOR)
     print(" " * 8 + "AVENTURA ÉPICA RPG")
-    print("="*40)
+    print(DIVISOR)
     
-    nome = input("\nDigite o nome do seu Herói: ", "Herói Anônimo")
-    
-    classe_valida = False
+    nome_input: str = input("\nDigite o nome do seu Herói: ")
+    nome: str = nome_input if nome_input.strip() else "Herói Anônimo"
+
+    classe_valida: bool = False
     while not classe_valida:
         print("\nEscolha sua Classe:")
         print("[1] Guerreiro (Alto HP, Alta Força, Começa com muito Escudo)")
         print("[2] Mago (Alta Inteligência, Muito Rápido, Ataques Mágicos)")
-        escolha_classe = input("-> ")
+        escolha_classe: str = input("-> ")
         
         if escolha_classe == '1':
             jogador = Jogador(nome, "Guerreiro")
@@ -27,29 +31,32 @@ def jogo_principal():
         else:
             print("Classe inválida! Tente novamente.")
 
+    if jogador is None:
+        return
+
     print(f"\nBem-vindo, {jogador.classe} {jogador.nome}!")
     time.sleep(2)
 
-    batalhas_vencidas = 0
+    batalhas_vencidas: int = 0
 
     while jogador.esta_vivo():
-        Utilities.limpar_tela()
-        print("="*40)
+        limpar_tela()
+        print(DIVISOR)
         print("MENU PRINCIPAL - FLORESTA ESCURA")
         print(f"Batalhas Vencidas: {batalhas_vencidas}")
-        print("="*40)
+        print(DIVISOR)
         print("[1] Explorar (Procurar Inimigos)")
         print("[2] Status e Inventário")
         print("[3] Descansar (Recupera um pouco de HP, risco de emboscada)")
         print("[4] Desistir da Aventura")
 
-        escolha = input("\nO que deseja fazer? ")
+        escolha: str = input("\nO que deseja fazer? ")
 
         if escolha == '1':
             print("\nVocê caminha pela floresta escura...")
             time.sleep(1.5)
-            inimigo = Utilities.gerar_inimigo_aleatorio()
-            Utilities.iniciar_combate(jogador, inimigo)
+            inimigo = gerar_inimigo_aleatorio()
+            iniciar_combate(jogador, inimigo)
             if jogador.esta_vivo():
                 batalhas_vencidas += 1
 
@@ -63,12 +70,12 @@ def jogo_principal():
             if random.random() < 0.3: # 30% chance de emboscada
                 print("CUIDADO! Você foi emboscado enquanto descansava!")
                 time.sleep(1.5)
-                inimigo = Utilities.gerar_inimigo_aleatorio()
-                Utilities.iniciar_combate(jogador, inimigo)
+                inimigo = gerar_inimigo_aleatorio()
+                iniciar_combate(jogador, inimigo)
                 if jogador.esta_vivo():
                     batalhas_vencidas += 1
             else:
-                cura = int(jogador.hp_max * 0.3)
+                cura: int = int(jogador.hp_max * 0.3)
                 jogador.hp = min(jogador.hp + cura, jogador.hp_max)
                 print(f"Descanso tranquilo. Você recuperou {cura} de HP!")
                 time.sleep(2)
@@ -81,13 +88,13 @@ def jogo_principal():
             time.sleep(1)
 
     if not jogador.esta_vivo():
-        Utilities.limpar_tela()
-        print("="*40)
+        limpar_tela()
+        print(DIVISOR)
         print(" " * 12 + "GAME OVER")
-        print("="*40)
+        print(DIVISOR)
         print(f"{jogador.nome} caiu em batalha.")
         print(f"Monstros derrotados: {batalhas_vencidas}")
-        print("="*40)
+        print(DIVISOR)
 
 if __name__ == "__main__":
     jogo_principal()
