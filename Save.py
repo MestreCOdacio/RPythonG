@@ -1,7 +1,7 @@
 import json #importando a biblioteca nativa para manipular json
-import Jogador
+from Jogador import Jogador
 
-def salvar_jogo(jogador : type, batalhas_vencidas : int): # definindo a tipagem de parâmetro pra poder pegar o objeto junto com o inteiro
+def salvar_jogo(jogador : type, batalhas_vencidas : int): # definindo a tipagem do parâmetro pra poder pegar o objeto junto com o inteiro
     save_jogador = (vars(jogador)) # salva os chave-valores do objeto e não a coordenada.
     save_jogador['batalhas_vencidas'] = batalhas_vencidas #coloca uma chave no objeto com o valor do segundo parâmetro
     with open("save.json", "w") as f: #utiliza a estrutura with, para que não aja necessidade de fechar o arquivo manualmente caso dê errado.
@@ -14,7 +14,7 @@ def carregar_jogo():
             
             carregar_save = input(f"Foi encontrado um save com o nome {save['nome']}, deseja carregar?[s/n]").lower()
             if carregar_save == 's':
-                jogador_carregado = Jogador.Jogador(save['nome'], save['classe']) # criando um objeto com o construtor
+                jogador_carregado = Jogador(save['nome'], save['classe']) # criando um objeto com o construtor
                 jogador_carregado.inventario = save['inventario']
                 jogador_carregado.hp_max = save['hp_max']
                 jogador_carregado.forca = save['forca']
