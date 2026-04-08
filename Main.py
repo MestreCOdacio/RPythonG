@@ -3,6 +3,7 @@ import random
 import time
 from Jogador import Jogador
 from Utilities import gerar_inimigo_aleatorio, iniciar_combate, limpar_tela
+from Save import carregar_jogo, salvar_jogo#importando as funções de salvamento e carregamento.
 
 def jogo_principal() -> None:
     limpar_tela()
@@ -11,33 +12,46 @@ def jogo_principal() -> None:
     print(DIVISOR)
     print(" " * 8 + "AVENTURA ÉPICA RPG")
     print(DIVISOR)
-    
-    nome_input: str = input("\nDigite o nome do seu Herói: ")
-    nome: str = nome_input if nome_input.strip() else "Herói Anônimo"
+    jogo_salvo = carregar_jogo() #variável que recebe os valores retornados do carregar_jogo().
 
-    classe_valida: bool = False
-    while not classe_valida:
-        print("\nEscolha sua Classe:")
-        print("[1] Guerreiro (Alto HP, Alta Força, Começa com muito Escudo)")
-        print("[2] Mago (Alta Inteligência, Muito Rápido, Ataques Mágicos)")
-        escolha_classe: str = input("-> ")
+    if jogo_salvo == None: #testando se foi encontrado arquivo de save com a variável.
         
-        if escolha_classe == '1':
-            jogador = Jogador(nome, "Guerreiro")
-            classe_valida = True
-        elif escolha_classe == '2':
-            jogador = Jogador(nome, "Mago")
-            classe_valida = True
-        else:
-            print("Classe inválida! Tente novamente.")
+        nome_input: str = input("\nDigite o nome do seu Herói: ")
+        nome: str = nome_input if nome_input.strip() else "Herói Anônimo"
 
+        classe_valida: bool = False
+        while not classe_valida:
+            print("\nEscolha sua Classe:")
+            print("[1] Guerreiro (Alto HP, Alta Força, Começa com muito Escudo)")
+            print("[2] Mago (Alta Inteligência, Muito Rápido, Ataques Mágicos)")
+            escolha_classe: str = input("-> ")
+            
+            if escolha_classe == '1':
+                jogador = Jogador(nome, "Guerreiro")
+                classe_valida = True
+            elif escolha_classe == '2':
+                jogador = Jogador(nome, "Mago")
+                classe_valida = True
+            else:
+                print("Classe inválida! Tente novamente.")
+        batalhas_vencidas: int = 0
+    else:
+        limpar_tela()
+        print(DIVISOR)
+        print(" " * 8 + "AVENTURA ÉPICA RPG")
+        print(DIVISOR)
+        jogador, batalhas_vencidas = jogo_salvo # cada variável recebe um dos valores retornados.
+        print("save carregado!")
+        time.sleep(1)
+        limpar_tela()
+    
     if jogador is None:
         return
 
     print(f"\nBem-vindo, {jogador.classe} {jogador.nome}!")
     time.sleep(2)
 
-    batalhas_vencidas: int = 0
+    
 
     while jogador.esta_vivo():
         limpar_tela()
@@ -48,7 +62,8 @@ def jogo_principal() -> None:
         print("[1] Explorar (Procurar Inimigos)")
         print("[2] Status e Inventário")
         print("[3] Descansar (Recupera um pouco de HP, risco de emboscada)")
-        print("[4] Desistir da Aventura")
+        print("[4] Salvar e sair")
+        print("[5] Desistir da Aventura")
 
         escolha: str = input("\nO que deseja fazer? ")
 
@@ -81,6 +96,12 @@ def jogo_principal() -> None:
                 time.sleep(2)
 
         elif escolha == '4':
+            salvar_jogo(jogador, batalhas_vencidas) #cria o arquivo json para salvar as informações do jogador.
+            print("jogo salvo!")
+            break
+
+
+        elif escolha == '5':
             print(f"\nVocê decidiu voltar para casa. Batalhas vencidas: {batalhas_vencidas}. Até logo!")
             break
         else:
