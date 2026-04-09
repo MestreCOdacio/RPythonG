@@ -36,7 +36,7 @@ def gerar_inimigo_aleatorio() -> Inimigo:
 
 def dar_recompensa(jogador: Jogador) -> None:
     chance: float = random.random()
-    if chance < 0.9: # 60% chance de dropar item
+    if chance < 0.3: # 60% chance de dropar item
         item_ganho = random.choice(list(ITENS_DB.keys()))
         if item_ganho in jogador.inventario:
             jogador.inventario[item_ganho] += 1
