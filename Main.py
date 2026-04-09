@@ -3,7 +3,7 @@ import random
 import time
 from Jogador import Jogador
 from Utilities import gerar_inimigo_aleatorio, iniciar_combate, limpar_tela
-from Save import carregar_jogo, salvar_jogo#importando as funções de salvamento e carregamento.
+from Save import carregar_jogo, salvar_jogo #importando as funções de salvamento e carregamento.
 
 def jogo_principal() -> None:
     limpar_tela()
@@ -12,7 +12,10 @@ def jogo_principal() -> None:
     print(DIVISOR)
     print(" " * 8 + "AVENTURA ÉPICA RPG")
     print(DIVISOR)
-    jogo_salvo = carregar_jogo() #variável que recebe os valores retornados do carregar_jogo().
+    print("Escolha um Slot de Save:")
+    num_slot = input("\n1.\n2.\n3.\n>")
+    slot_selecionado = "save_slot" + num_slot
+    jogo_salvo = carregar_jogo(slot_selecionado) #variável que recebe os valores retornados do carregar_jogo().
 
     if jogo_salvo == None: #testando se foi encontrado arquivo de save com a variável.
         
@@ -50,7 +53,6 @@ def jogo_principal() -> None:
 
     print(f"\nBem-vindo, {jogador.classe} {jogador.nome}!")
     time.sleep(2)
-
     
 
     while jogador.esta_vivo():
@@ -96,10 +98,9 @@ def jogo_principal() -> None:
                 time.sleep(2)
 
         elif escolha == '4':
-            salvar_jogo(jogador, batalhas_vencidas) #cria o arquivo json para salvar as informações do jogador.
+            salvar_jogo(jogador, batalhas_vencidas, slot_selecionado) #cria o arquivo json para salvar as informações do jogador.
             print("jogo salvo!")
             break
-
 
         elif escolha == '5':
             print(f"\nVocê decidiu voltar para casa. Batalhas vencidas: {batalhas_vencidas}. Até logo!")
@@ -116,6 +117,7 @@ def jogo_principal() -> None:
         print(f"{jogador.nome} caiu em batalha.")
         print(f"Monstros derrotados: {batalhas_vencidas}")
         print(DIVISOR)
+        jogo_salvo[slot_selecionado] = None
 
 if __name__ == "__main__":
     jogo_principal()
